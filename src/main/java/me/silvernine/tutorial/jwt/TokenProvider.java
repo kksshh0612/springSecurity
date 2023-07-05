@@ -65,6 +65,8 @@ public class TokenProvider implements InitializingBean {
       // jws == header(json) + payload(json) + signature( sign(header+payload) )
       // claim은 jwt 안에 넣고싶은 정보들. Standard Claims은 setter를 이용해 기본적인 정보들을 넣을 수 있게 해준다.
       // 기본으로 등록되 claim 말고 새로운 것을 넣고싶으면 customclaim을 이용한다. .claim()
+      // 등록된 클레임, 공개 클레임, 비공개 클레임이 있다.
+      // 공개 클레임을 사용할 때는 uri를 사용하여 고유하게 만든다.
       return Jwts.builder()                     //JwtBuilder 객체를 생성
          .setSubject(authentication.getName())        // payload "sub": "name"
          .claim(AUTHORITIES_KEY, authorities)         // payload "auth": "ROLE_USER"
