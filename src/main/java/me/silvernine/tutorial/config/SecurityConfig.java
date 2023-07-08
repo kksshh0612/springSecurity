@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
@@ -22,10 +23,12 @@ import org.springframework.web.filter.CorsFilter;
 @EnableMethodSecurity
 @Configuration
 public class SecurityConfig {                       //스프링 시큐리티 관련 설정
+
     private final TokenProvider tokenProvider;
     private final CorsFilter corsFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final RememberMeServices rememberMeServices;
 
     /*
     생성자
@@ -34,12 +37,14 @@ public class SecurityConfig {                       //스프링 시큐리티 관
         TokenProvider tokenProvider,
         CorsFilter corsFilter,
         JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-        JwtAccessDeniedHandler jwtAccessDeniedHandler
+        JwtAccessDeniedHandler jwtAccessDeniedHandler,
+        RememberMeServices rememberMeServices
     ) {
         this.tokenProvider = tokenProvider;
         this.corsFilter = corsFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+        this.rememberMeServices = rememberMeServices;
     }
 
     /*
@@ -82,6 +87,13 @@ public class SecurityConfig {                       //스프링 시큐리티 관
             // 세션을 사용하지 않기 때문에 STATELESS로 설정
             .sessionManagement(sessionManagement ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
+            //브라우저 자동 로그인
+            .rememberMe(rememberMe -> rememberMe
+                    .key("uniqueKey")                       // 토큰을 암호화하는 데 사용될 키
+                    .rememberMeServices(rememberMeServices) // RememberMeServices 인터페이스를 구현한 구체적인 서비스
+                    .tokenValiditySeconds(86400)            // 토큰의 유효 기간과 같게 설정
             )
 
             // 헤더 관련 설정

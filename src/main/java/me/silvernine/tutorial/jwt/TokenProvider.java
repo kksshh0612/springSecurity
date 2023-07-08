@@ -25,19 +25,16 @@ public class TokenProvider implements InitializingBean {
 
    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
    private static final String AUTHORITIES_KEY = "auth";    //권한
-   private final String secret;
-   private final long tokenValidityInMilliseconds;
+   @Value("#{environment['jwt.secret']}")
+   private String secret;
+   @Value("#{environment['jwt.token-validity-in-seconds']}")
+   private long tokenValidityInMilliseconds;
    private Key key;
 
    /*
    생성자
     */
-   public TokenProvider(
-      @Value("#{environment['jwt.secret']}") String secret,
-      @Value("#{environment['jwt.token-validity-in-seconds']}") long tokenValidityInSeconds) {
-      this.secret = secret;
-      this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
-   }
+   public TokenProvider(){}
 
    /*
    빈이 생성되고 의존관계 주입까지 완료된 후, Key 변수에 값 할당
@@ -66,7 +63,7 @@ public class TokenProvider implements InitializingBean {
       // claim은 jwt 안에 넣고싶은 정보들. Standard Claims은 setter를 이용해 기본적인 정보들을 넣을 수 있게 해준다.
       // 기본으로 등록되 claim 말고 새로운 것을 넣고싶으면 customclaim을 이용한다. .claim()
       // 등록된 클레임, 공개 클레임, 비공개 클레임이 있다.
-      // 공개 클레임을 사용할 때는 uri를 사용하여 고유하게 만든다.
+      // 공개 클레임을 사용할 때는 uri를 사용하여 고유하게 만든다. ex) "https://velopert.com/jwt_claims/is_admin": true
       return Jwts.builder()                     //JwtBuilder 객체를 생성
          .setSubject(authentication.getName())        // payload "sub": "name"
          .claim(AUTHORITIES_KEY, authorities)         // payload "auth": "ROLE_USER"
