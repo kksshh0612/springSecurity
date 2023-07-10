@@ -33,8 +33,14 @@ public class CustomRememberMeServices implements RememberMeServices {
 
     @Override
     public void loginFail(HttpServletRequest request, HttpServletResponse response) {
+
+        //로그아웃시 토큰 없어지게 구현하기 로그인 실패하면 그냥 실패한거.. 토큰 발행할 일이 없음.
+
         // 로그인 실패 시에 호출되는 메서드입니다.
         // 필요한 경우, 로그인 실패와 관련된 작업을 수행할 수 있습니다.
+//        if(extractRememberMeToken(request) != null){        // 토큰이 있으면
+//
+//        }
     }
 
     @Override
@@ -52,7 +58,7 @@ public class CustomRememberMeServices implements RememberMeServices {
 
         Cookie[] cookies = request.getCookies();;
 
-        if(cookies.length != 0) {
+        if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(rememberMeCookieName)) {      //rememberMe 쿠키이면
                     return cookie.getValue();
@@ -68,7 +74,7 @@ public class CustomRememberMeServices implements RememberMeServices {
     private String generateRememberMeToken(Object principal) {
         TokenProvider tokenProvider = new TokenProvider();
 
-
+        return tokenProvider.createRememberMeToken(principal);
     }
 
     /*

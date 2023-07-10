@@ -18,6 +18,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -70,6 +71,15 @@ public class TokenProvider implements InitializingBean {
          .setExpiration(validity)                     // payload "exp": 1516239022 (예시)
          .signWith(key, SignatureAlgorithm.HS512)     // header "alg": "HS512"
          .compact();       //압축하고 서명하여 jws 생성
+   }
+
+   /*
+   remember-me 토큰 발행
+    */
+   public String createRememberMeToken(Object principal){
+      String randomVal = UUID.randomUUID().toString();
+
+      return randomVal + principal.toString();
    }
 
    /*

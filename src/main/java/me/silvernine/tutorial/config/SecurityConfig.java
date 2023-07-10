@@ -79,6 +79,7 @@ public class SecurityConfig {                       //스프링 시큐리티 관
             //http 요청에 대한 접근 권한을 설정한다.
             //로그인, 회원가입 api는 토큰이 없는 상태로 요청이 들어오기 때문에 permitAll()로 열어줌
             .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()       //html, css같은 정적 리소스에 대해 접근 허용
                 .requestMatchers("/api/hello", "/api/authenticate", "/api/signup").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()     //H2 콘솔에 대한 접근 허용
                 .anyRequest().authenticated()       //나머지 요청은 모두 권한 필요함.
